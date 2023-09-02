@@ -1,0 +1,132 @@
+ {% extends 'shop/base.html' %}
+
+ {% block main_area %}
+
+        <!-- Header-->
+        <header class="bg-light py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center">
+                    <h1 class="display-4 fw-bolder">Cosmetic Shop
+                        {% if category %}
+                            - <span>{{ category }} ({{ category.item_set.count}})</span>
+                        {% endif %}
+                        {% if company %}
+                            - <span >{{ company }} ({{ company.item_set.count}})</span>
+                        {% endif %}
+                        {% if tag %}
+                            - <i class="fas fa-tag"></i> <span>
+                            {{ tag }} ({{tag.item_set.count}})
+                        </span>
+                        {% endif %}
+                        {% if search_info %}
+                        <span class="badge badge-secondary">
+                            {{search_info}}
+                        </span>
+                        {% endif %}
+                    </h1>
+                    <p class="lead fw-normal text-50 mb-0">Best item list</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section-->
+            <!--search-->
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="input-group mb-3 w-75 mx-auto">
+                    <input style="height: 50px;" type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="button-addon2" id="search-input">
+                    <div class="input-group-append">
+                        <button style="height: 50px;" class="btn btn-outline-secondary" type="button" onclick="searchItem();" id="button-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </div>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 ">
+
+                    {% if item_list.exists %}
+                    {% for i in item_list %}
+                    <div class="col-4 mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            {% if i.image %}
+                            <img class="card-img-top" src="{{ i.image.url }}" alt="{{ i.title }}의 image"/>
+                            {% else %}
+                            <img class="card-img-top" src="https://picsum.photos/seed/{{i.pk}}/800/200" alt="random_image"/>
+                            {% endif %}
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    {% if i.category %}
+                                    <span class="badge badge-light"><a class = "text-decoration-none text-dark" href="{{i.category.get_absolute_url}}">{{i.category}}</a></span>
+                                    {% else %}
+                                    <span class="badge badge-light"><a href="/shop/category/no_category/">미분류</a></span>
+                                    {% endif %}
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{i.name}}</h5>
+                                    <!-- Product company-->
+                                    <h5 class="text-muted"><a class = "text-decoration-none text-dark" href="{{i.company.get_absolute_url}}">{{i.company}}</a></h5>
+                                    <!-- Product price-->
+                                     <h5 class="text-muted">{{i.price}}</h5>
+                                    <p class="card-text">{{i.get_content_markdown | truncatewords_html:5 | safe}}</p>
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{i.get_absolute_url}}">View options</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                        <h5>아무 게시물이 없습니다.</h5>
+                    {% endif %}
+                </div>
+                {% if company %}
+                <hr>
+                <div>
+                        <div class="text-muted">Company: {{ company.name }}</div>
+                        <div class="text-muted">Addr: {{ company.address }}</div>
+                        <div class="text-muted">Tel: {{ company.contact }}</div>
+                        <div class="text-muted">CEO: {{ company.owner }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+
+                <!-- Pagination-->
+                {% if is_paginated %}
+                <nav aria-label="Pagination">
+                    <hr class="my-0" />
+                    <ul class="pagination justify-content-center my-4">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true"><</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true"><</a></li>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">></a></li>
+                        {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#!">></a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+ <script>
+         function searchItem(){
+             searchValue = document.getElementById('search-input').value.trim();
+             if (searchValue.length > 1){
+                     location.href = "/shop/search/"+ searchValue+ "/";
+             }
+             else{
+                 alert('검색어( '+ searchValue+ ' )가 너무 짧아요');
+             }
+         };
+
+         document.getElementById('search-input').addEventListener('keyup', function(event){
+              if(event.key === 'Enter'){
+                 searchItem();
+              }
+         });
+</script>
+
+ {% endblock %}
+
+

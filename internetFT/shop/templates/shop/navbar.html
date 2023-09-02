@@ -1,0 +1,119 @@
+{% load socialaccount %}
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="/">Cosmetic Shop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="/companypage/">about us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/shop/">Item</a></li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="companyLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               Company
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="companyLink">
+                                <a class="dropdown-item" href="/shop/company/3ce/">3CE</a>
+                                <a class="dropdown-item" href="/shop/company/키스미/">키스미</a>
+                                <a class="dropdown-item" href="/shop/company/롬앤/">롬앤</a>
+                                <a class="dropdown-item" href="/shop/company/에스쁘아/">에스쁘아</a>
+                                <a class="dropdown-item" href="/shop/company/데이지크/">데이지크</a>
+                                <a class="dropdown-item" href="/shop/company/클리오/">클리오</a>
+                                <a class="dropdown-item" href="/shop/company/웨이크메이크/">웨이크메이크</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="categoryLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               Category
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="categoryLink">
+                                <a class="dropdown-item" href="/shop/category/아이메이크업/">아이메이크업</a>
+                                <a class="dropdown-item" href="/shop/category/베이스메이크업/">베이스메이크업</a>
+                                <a class="dropdown-item" href="/shop/category/립메이크업/">립메이크업</a>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser or user.is_staff %}
+                                <a href="/shop/create_item/" role="button"
+                                    class="btn btn-outline-dark btn-sm float-right">
+                                <i class="fas fa-pen"></i>
+                                New Item
+                                </a>
+                        {% endif %}
+                        {% if user.username and user.email %}
+                        <li class="nav-item"><a class="nav-link" href="/mypage/">My page</a></li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               {% if user.socialaccount_set.all.0.get_avatar_url %}
+                                    <img class="rounded-circle mr-1" src="{{user.socialaccount_set.all.0.get_avatar_url}}" width="25px">
+                                {% else %}
+                                    <img class="rounded-circle mr-1" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" width="25px">
+                                {% endif %}
+                                {{user.username}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="/accounts/logout/">LogOut</a>
+                            </div>
+                        </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">LogIn</a>
+                    </li>
+                    {% endif %}
+                    </ul>
+
+                    <form class="d-flex">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fa-solid fa-right-to-bracket"></i>LogIn</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <a role="button" type="button" class="btn btn-outline-dark btn-block btn-sm"
+                            href="{% provider_login_url 'google' %}">
+                                <i class="fa-brands fa-google"></i> LogIn with Google
+                            </a>
+                            <a role="button" type="button" class="btn btn-outline-dark btn-block btn-sm" href="/accounts/login/">
+                                <i class="fa-regular fa-envelope"></i> LogIn with Email
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a role="button" type="button" class="btn btn-outline-dark btn-block btn-sm"
+                            href="{% provider_login_url 'kakao' %}">
+                                <i class="fa-sharp fa-solid fa-comment"></i> LogIn with kakao
+                            </a>
+                            <a role="button" type="button" class="btn btn-outline-dark btn-block btn-sm" href="/accounts/signup/">
+                                <i class="fa-regular fa-envelope"></i> SignUp with Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
